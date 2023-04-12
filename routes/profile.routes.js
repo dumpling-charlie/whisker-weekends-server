@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const User = require("../models/User.model");
 const Pet = require("../models/Pet.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 // GET - view my account
+// ***needs more testing
 router.get("/my-account", isAuthenticated, (req, res) => { 
 
   const userId = req.payload.sub;
@@ -25,6 +27,7 @@ router.get("/my-account", isAuthenticated, (req, res) => {
 });
 
 // PUT - edit my account
+// ***needs more testing
 router.put("/edit", isAuthenticated, (req, res) => {
   const userId = req.payload.sub;
   const { name, email, location } = req.body;
@@ -45,6 +48,7 @@ router.put("/edit", isAuthenticated, (req, res) => {
 });
 
 // POST - delete my account
+// ***needs more testing
 router.delete("/my-account", isAuthenticated, (req, res, next) => {
   const userId = req.payload.sub;
 
@@ -61,8 +65,9 @@ router.delete("/my-account", isAuthenticated, (req, res, next) => {
 });
 
 // GET - view pet profile
-router.get("/pet/:petId", isAuthenticated, (req, res) => {
-  const userId = req.payload.sub;
+// ***WORKING***
+router.get("/pet/:petId", (req, res) => {
+  const { petId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(petId)) {
     res.status(400).json({ message: "Specified id is not valid" });
@@ -79,14 +84,15 @@ router.get("/pet/:petId", isAuthenticated, (req, res) => {
 });
 
 // POST - create pet profile
+// ***WORKING***
 router.post("/pets", (req, res, next) => {
     const { name, age, species, breed, personality } = req.body;
     const userId = req.payload.sub;
 
     Pet.create( {name, age, species, breed, personality, owner: userId} )
-        .then((res) => {
-            console.log(res);
-            res.status(201).json(response)
+        .then((result) => {
+            console.log(result);
+            res.status(201).json(result)
         })
         .catch(err => {
             console.log("error creating a new pet", err);
@@ -98,43 +104,57 @@ router.post("/pets", (req, res, next) => {
 })
 
 // PUT - edit pet profile
+// ***WORKING***
 router.put("/edit/:petId", isAuthenticated, (req, res) => { 
   const { petId } = req.params;
   const { name, age, species, breed, personality } = req.body;
+  const userId = req.payload.sub;
 
-  Pet.findByIdAndUpdate(
-    petId,
-    { name, age, species, breed, personality },
-    { new: true }
-  )
+  Pet.findOne({_id: petId, owner: userId})
     .then((pet) => {
       if (!pet) {
-        return res.status(404).json({ message: "Pet not found" });
+        return res.status(404).json({message: "pet not found"});
       }
-      console.log({ pet });
 
-      res.json({ pet });
+      Pet.findByIdAndUpdate(
+        petId, 
+        { name, age, species, breed, personality },
+        {new: true}
+      )
+        .then((updatedPet) => {
+          console.log({updatedPet});
+          res.json({pet: updatedPet});
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({message: "Internal server error"});
+        });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Internal server error" });
-    });
+      res.status(500).json({message: "Internal server error"});
+    })
 });
 
-// POST - delete pet profile
+// DELETE - delete pet profile
+// ***WORKING***
 router.delete("/pet/:petId", isAuthenticated, (req, res, next) => { 
     const { petId } = req.params;
-  
-    if (!mongoose.Types.ObjectId.isValid(petId)) {
-      res.status(400).json({ message: "Specified ID is not valid" });
-      return;
-    }
-  
-    Pet.findByIdAndRemove(petId)
-      .then(() =>
-        res.json({ message: `Pet with ${petId} is removed successfully.` })
-      )
+    const userId = req.payload.sub;
+
+    Pet.findOne({ _id: petId, owner: userId })
+      .then((pet) => {
+        if(!pet) {
+          return res.status(404).json({ message: "Pet not found" });
+        }
+
+        Pet.findByIdAndDelete(petId)
+          .then(() => {
+            res.json({ message: `pet with ${petId} is removed successfully`})
+          })
+          .catch((error) => res.json(error));
+      })
       .catch((error) => res.json(error));
-  });
+    });
 
 module.exports = router;

@@ -26,7 +26,7 @@ const petSchema = new Schema(
     },
     owner: {
         type: Schema.Types.ObjectId,
-        required: true,
+        // required: true,
         ref: 'User'
     },
     imageUrl: {
