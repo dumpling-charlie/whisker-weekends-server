@@ -43,6 +43,7 @@ router.get("/playdates", (req, res) => {
 // edit event
 router.get("/playdates/:id/edit", isAuthenticated, (req, res) => {
   const { id } = req.params;
+  const userId = req.payload.sub;
 
   Playdate.findById(id)
     .then((playdateToEdit) => {
@@ -59,8 +60,6 @@ router.post(
   (req, res) => {
     const { id } = req.params;
     const { title, location, date, pets, description, createdBy } = req.body;
-
-
 
     Playdate.findByIdAndUpdate(
       id,

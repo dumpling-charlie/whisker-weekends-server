@@ -6,7 +6,8 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 // GET - view my account
 router.get("/my-account", isAuthenticated, (req, res) => { 
-  const userId = req.user._id;
+
+  const userId = req.payload.sub;
 
   User.findById(userId)
     .then((user) => {
@@ -25,7 +26,7 @@ router.get("/my-account", isAuthenticated, (req, res) => {
 
 // PUT - edit my account
 router.put("/edit", isAuthenticated, (req, res) => {
-  const userId = req.user._id;
+  const userId = req.payload.sub;
   const { name, email, location } = req.body;
 
   User.findByIdAndUpdate(userId, { name, email, location }, { new: true })
@@ -45,7 +46,7 @@ router.put("/edit", isAuthenticated, (req, res) => {
 
 // POST - delete my account
 router.delete("/my-account", isAuthenticated, (req, res, next) => {
-  const { userId } = req.user._id;
+  const userId = req.payload.sub;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     res.status(400).json({ message: "Specified ID is not valid" });
@@ -61,7 +62,7 @@ router.delete("/my-account", isAuthenticated, (req, res, next) => {
 
 // GET - view pet profile
 router.get("/pet/:petId", isAuthenticated, (req, res) => {
-  const { petId } = req.params;
+  const userId = req.payload.sub;
 
   if (!mongoose.Types.ObjectId.isValid(petId)) {
     res.status(400).json({ message: "Specified id is not valid" });
@@ -80,7 +81,7 @@ router.get("/pet/:petId", isAuthenticated, (req, res) => {
 // POST - create pet profile
 router.post("/pets", (req, res, next) => {
     const { name, age, species, breed, personality } = req.body;
-    const { userId } = req.user._id;
+    const userId = req.payload.sub;
 
     Pet.create( {name, age, species, breed, personality, owner: userId} )
         .then((res) => {
