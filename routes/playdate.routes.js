@@ -3,83 +3,95 @@ const router = express.Router();
 const Playdate = require("../models/Playdate.model.js");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
-router.get("/playdates/create", isAuthenticated, (req, res) =>
-  res.render("playdates/create")
+//GET - list all playdates
+router.get("/playdates", (req, res) =>
+  Playdate.find({})
+    .then((playdates) => res.status(200).json(playdates))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    })
 );
 
-//create playdate
-router.post(
-  "/playdates/create",
-  (req, res) => {
-    const { title, location, date, pets, description, createdBy } = req.body;
+// GET - view playdate
+router.get("/playdates/:playdateId", isAuthenticated, (req, res) => {
+  const playdateId = req.params.playdateId;
 
-    Playdate.create({
-      title,
-      location,
-      date,
-      pets,
-      description,
-      createdBy,
+  if (!mongoose.Types.ObjectId.isValid(playdateId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Playdate.findById(playdateId)
+    .then((playdate) => res.status(200).json(playdate))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+// POST - create a playdate
+router.post("/playdates/create", isAuthenticated, (req, res) => {
+  const { title, location, date, pets, description } = req.body;
+
+  const newPlaydate = new Playdate({
+    title,
+    location,
+    date,
+    pets,
+    description,
+    organizer: req.payload.sub, // set the organizer to the authenticated user's ID
+  });
+
+  newPlaydate
+    .save()
+    .then((playdate) => res.status(201).json(playdate))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+// PUT - edit my playdate
+router.put("/playdates/:playdateId", isAuthenticated, (req, res) => {
+  const playdateId = req.params.playdateId;
+  const { title, location, date, pets, description } = req.body;
+
+  Playdate.findByIdAndUpdate(
+    playdateId,
+    { title, location, date, pets, description },
+    { new: true }
+  )
+    .then((playdate) => {
+      if (!playdate) {
+        return res.status(404).json({ message: "Playdate not found" });
+      }
+      console.log({ playdate });
+
+      res.json({ playdate });
     })
-      .then((newlyCreatedPlaydateFromDB) => {
-        res.redirect("/playdates");
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+// DELETE - delete my playdate
+router.delete("/playdates/:playdateId", isAuthenticated, (req, res, next) => {
+  const playdateId = req.params.playdateId;
+
+  if (!mongoose.Types.ObjectId.isValid(playdateId)) {
+    res.status(400).json({ message: "Specified ID is not valid" });
+    return;
+  }
+
+  Playdate.findByIdAndRemove(playdateId)
+    .then(() =>
+      res.json({
+        message: `Playdate with ${playdateId} is removed successfully.`,
       })
-      .catch((error) => res.redirect("/playdates/create"), {
-        errorMessage: "Unable to edit playdate.",
-      });
-  }
-);
-
-router.get("/playdates", (req, res) => {
-  Playdate.find()
-    .then((playdatesFromDB) => {
-      res.render("/playdates", { playdates: playdatesFromDB });
-    })
-    .catch((err) =>
-      console.log(`Error while getting the playdates from the DB: ${err}`)
-    );
-});
-
-// edit event
-router.get("/playdates/:id/edit", isAuthenticated, (req, res) => {
-  const { id } = req.params;
-  const userId = req.payload.sub;
-
-  Playdate.findById(id)
-    .then((playdateToEdit) => {
-        res.render("events/events-edit", eventToEdit);
-
-    })
-    .catch((error) =>
-      console.log(`Error while getting a single playdate for edit: ${error}`)
-    );
-});
-
-router.post(
-  "/playdates/:id/edit",
-  (req, res) => {
-    const { id } = req.params;
-    const { title, location, date, pets, description, createdBy } = req.body;
-
-    Playdate.findByIdAndUpdate(
-      id,
-      { title, location, date, pets, description, createdBy },
-      { new: true }
     )
-      .then(() => res.redirect(`/playdates`))
-      .catch((error) => res.redirect("playdates/"), {
-        errorMessage: "Unable to edit playdate.",
-      });
-  }
-);
-
-//Delete event
-router.post("/playdates/:playdateId/delete", isAuthenticated, (req, res, next) => {
-  const { playdateId } = req.params;
-
-  Event.findByIdAndDelete(playdateId)
-    .then(() => res.redirect("/playdates"))
-    .catch((error) => next(error));
+    .catch((error) => res.json(error));
 });
 
 module.exports = router;
