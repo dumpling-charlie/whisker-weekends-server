@@ -22,13 +22,13 @@ const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
 const profileRoutes = require("./routes/profile.routes");
-app.use("/profile", profileRoutes);
+app.use("/api/profile", profileRoutes);
 
 const playdateRoutes = require("./routes/playdate.routes");
-app.use("/playdates", playdateRoutes);
+app.use("/api/playdates", playdateRoutes);
 
 const petRoutes = require("./routes/pet.routes");
-app.use("/pets", petRoutes);
+app.use("/api/pets", petRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
