@@ -4,8 +4,21 @@ const mongoose = require("mongoose");
 const Pet = require("../models/Pet.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
-// GET - view pet profile
-// ***WORKING***
+// GET - /api/pets view all pets
+router.get("/", (req, res) => {
+    console.log("Got a request for the pets list!")
+    Pet.find()
+    .then(allPets => res.json(allPets))
+    .catch(err => {
+        console.log("error getting list of pets", err);
+        res.status(500).json({
+            message: "error getting list of pets",
+            error: err
+        })
+    })
+})
+
+// GET - view pet profile details
 router.get("/:petId", (req, res) => {
     const { petId } = req.params;
   
@@ -23,15 +36,15 @@ router.get("/:petId", (req, res) => {
         });
   });
   
-  // POST - create pet profile
-  // ***WORKING***
-  router.post("/pets", (req, res, next) => {
+  // create pet profile
+  // POST /api/pets/
+  router.post("/", isAuthenticated, (req, res, next) => {
       const { name, age, species, breed, personality } = req.body;
-      const userId = req.payload.sub;
+      const userId = req.payload._id;
   
       Pet.create( {name, age, species, breed, personality, owner: userId} )
           .then((result) => {
-              console.log(result);
+            console.log(userId)
               res.status(201).json(result)
           })
           .catch(err => {

@@ -22,7 +22,7 @@ const petSchema = new Schema(
     personality: {
       type: String,
       enum: ['introvert', 'outgoing', 'playful'],
-      required: true
+      // required: true
     },
     owner: {
         type: Schema.Types.ObjectId,
