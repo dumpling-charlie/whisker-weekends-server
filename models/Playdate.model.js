@@ -4,7 +4,7 @@ const playdateSchema = new Schema(
     {
       image: {
         type: String,
-        required: true
+        // required: true
       },
       title: {
         type: String,
@@ -16,12 +16,12 @@ const playdateSchema = new Schema(
       },
       date: {
         type: Date,
-        required: true,
+        // required: true,
       },
       pets: [{
         type: Schema.Types.ObjectId,
         ref: 'Pet',
-        required: true,
+        // required: true,
       }],
     //   time: {
     //     type: String,
@@ -33,7 +33,7 @@ const playdateSchema = new Schema(
       },
       createdBy: {
         type: Schema.Types.ObjectId,
-        required: true,
+        // required: true,
         ref: 'User'
     }
     },

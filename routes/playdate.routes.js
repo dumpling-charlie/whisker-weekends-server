@@ -14,7 +14,7 @@ router.get("/playdates", (req, res) =>
 );
 
 // GET - view playdate
-router.get("/playdates/:playdateId", isAuthenticated, (req, res) => {
+router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
   const playdateId = req.params.playdateId;
 
   if (!mongoose.Types.ObjectId.isValid(playdateId)) {
@@ -31,7 +31,7 @@ router.get("/playdates/:playdateId", isAuthenticated, (req, res) => {
 });
 
 // POST - create a playdate
-router.post("/playdates/create", isAuthenticated, (req, res) => {
+router.post("/create",  (req, res) => {
   const { title, location, date, pets, description } = req.body;
 
   const newPlaydate = new Playdate({
@@ -40,7 +40,7 @@ router.post("/playdates/create", isAuthenticated, (req, res) => {
     date,
     pets,
     description,
-    organizer: req.payload.sub, // set the organizer to the authenticated user's ID
+    // organizer: req.payload.sub, // set the organizer to the authenticated user's ID
   });
 
   newPlaydate
@@ -53,7 +53,7 @@ router.post("/playdates/create", isAuthenticated, (req, res) => {
 });
 
 // PUT - edit my playdate
-router.put("/playdates/:playdateId", isAuthenticated, (req, res) => {
+router.put("/:playdateId",  (req, res) => {
   const playdateId = req.params.playdateId;
   const { title, location, date, pets, description } = req.body;
 
@@ -77,7 +77,7 @@ router.put("/playdates/:playdateId", isAuthenticated, (req, res) => {
 });
 
 // DELETE - delete my playdate
-router.delete("/playdates/:playdateId", isAuthenticated, (req, res, next) => {
+router.delete("/playdates/:playdateId", (req, res, next) => {
   const playdateId = req.params.playdateId;
 
   if (!mongoose.Types.ObjectId.isValid(playdateId)) {

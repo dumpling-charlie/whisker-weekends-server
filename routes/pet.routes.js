@@ -6,7 +6,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 // GET - view pet profile
 // ***WORKING***
-router.get("/pets/:petId", (req, res) => {
+router.get("/:petId", (req, res) => {
     const { petId } = req.params;
   
     if (!mongoose.Types.ObjectId.isValid(petId)) {
@@ -78,7 +78,7 @@ router.get("/pets/:petId", (req, res) => {
   
   // DELETE - delete pet profile
   // ***WORKING***
-  router.delete("/pets/:petId", isAuthenticated, (req, res, next) => { 
+  router.delete("/:petId", isAuthenticated, (req, res, next) => { 
       const { petId } = req.params;
       const userId = req.payload.sub;
   
