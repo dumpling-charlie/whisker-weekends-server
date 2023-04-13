@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Playdate = require("../models/Playdate.model.js");
+const mongoose = require("mongoose");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 //GET - list all playdates
-router.get("/playdates", (req, res) =>
+router.get("/", (req, res) =>
   Playdate.find({})
     .then((playdates) => res.status(200).json(playdates))
     .catch((err) => {
@@ -32,12 +33,13 @@ router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
 
 // POST - create a playdate
 router.post("/create",  (req, res) => {
-  const { title, location, date, pets, description } = req.body;
+  const { title, location, date, time, pets, description } = req.body;
 
   const newPlaydate = new Playdate({
     title,
     location,
     date,
+    time,
     pets,
     description,
     // organizer: req.payload.sub, // set the organizer to the authenticated user's ID
@@ -53,13 +55,13 @@ router.post("/create",  (req, res) => {
 });
 
 // PUT - edit my playdate
-router.put("/:playdateId",  (req, res) => {
+router.put("/:playdateId/edit",  (req, res) => {
   const playdateId = req.params.playdateId;
-  const { title, location, date, pets, description } = req.body;
+  const { title, location, date, time, pets, description } = req.body;
 
   Playdate.findByIdAndUpdate(
     playdateId,
-    { title, location, date, pets, description },
+    { title, location, date, time, pets, description },
     { new: true }
   )
     .then((playdate) => {

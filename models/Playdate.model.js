@@ -23,10 +23,10 @@ const playdateSchema = new Schema(
         ref: 'Pet',
         // required: true,
       }],
-    //   time: {
-    //     type: String,
-    //     required: true,
-    //   },
+      time: {
+        type: String,
+        required: true,
+      },
       description: {
         type: String, 
         required: true
