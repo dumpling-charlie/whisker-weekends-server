@@ -4,10 +4,12 @@ const mongoose = require("mongoose");
 const Pet = require("../models/Pet.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
-// GET - /api/pets view all pets
-router.get("/", (req, res) => {
-    console.log("Got a request for the pets list!")
-    Pet.find()
+// GET - /api/pets view your own pets 
+router.get("/", isAuthenticated, (req, res) => {
+
+    const userId = req.payload._id;
+
+    Pet.find({ owner: userId })
     .then(allPets => res.json(allPets))
     .catch(err => {
         console.log("error getting list of pets", err);
