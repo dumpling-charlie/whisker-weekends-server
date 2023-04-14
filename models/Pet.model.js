@@ -14,7 +14,7 @@ const petSchema = new Schema(
     species: {
       type: String,
       enum: ['cat', 'dog'],
-      required: [true, "Type is required."],
+      required: [true, "Species is required."],
     },
     breed: {
       type: String,

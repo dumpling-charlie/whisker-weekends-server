@@ -19,9 +19,13 @@ const playdateSchema = new Schema(
         // required: true,
       },
       pets: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Pet',
-        // required: true,
+        name: {type: String, required: true },
+        age: {type: Number, required: true }, 
+        species: { type: String, required: true },
+        breed: {type: String},
+        personality: {type: String},
+        owner: {type: Schema.Types.ObjectId, ref: 'User'},
+        imageUrl: {type: String}
       }],
       time: {
         type: String,

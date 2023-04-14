@@ -14,6 +14,9 @@ router.get("/", (req, res) =>
     })
 );
 
+// view your own playdates
+// GET /api/playdates/userId
+
 // GET - view playdate
 router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
   const playdateId = req.params.playdateId;
