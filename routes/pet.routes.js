@@ -82,9 +82,6 @@ router.get("/pets/:petId", (req, res) => {
           })
   })
   
-  // PUT - edit pet profile
-  // ***WORKING***
-  router.put("/edit/:petId", isAuthenticated, (req, res) => { 
   
 // edit pet profile details
 // PUT /pets/:petId
