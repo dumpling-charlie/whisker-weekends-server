@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Pet = require("../models/Pet.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const fileUploader = require("../config/cloudinary.config");
+
 
 // GET - /api/pets view all pets
 router.get("/", (req, res) => {
@@ -35,7 +37,7 @@ router.get("/:petId", (req, res) => {
           res.status(500).json({ message: "Internal server error" });
         });
   });
-  
+
   // create pet profile
   // POST /api/pets/
   router.post("/", isAuthenticated, (req, res, next) => {
