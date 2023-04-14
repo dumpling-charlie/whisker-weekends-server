@@ -2,7 +2,7 @@
 
 const playdateSchema = new Schema(
     {
-      image: {
+      imageUrl: {
         type: String,
         // required: true
       },

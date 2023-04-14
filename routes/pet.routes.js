@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Pet = require("../models/Pet.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const fileUploader = require("../config/cloudinary.config");
+
 
 // view your own pets
 // GET - /api/pets
@@ -59,6 +61,27 @@ router.get("/pets/:petId", (req, res) => {
           res.status(500).json({ message: "Internal server error" });
         });
   });
+
+  // create pet profile
+  // POST /api/pets/
+  router.post("/", isAuthenticated, (req, res, next) => {
+      const { name, age, species, breed, personality } = req.body;
+      const userId = req.payload._id;
+  
+      Pet.create( {name, age, species, breed, personality, owner: userId} )
+          .then((result) => {
+            console.log(userId)
+              res.status(201).json(result)
+          })
+          .catch(err => {
+              console.log("error creating a new pet", err);
+              res.status(500).json({
+                  message: "error creating a new pet",
+                  error: err
+              });
+          })
+  })
+  
   
 // edit pet profile details
 // PUT /pets/:petId

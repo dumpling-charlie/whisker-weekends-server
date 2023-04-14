@@ -22,6 +22,10 @@ const userSchema = new Schema(
       type: String,
       required: [true, "location is required."],
     },
+    image: {
+      type: String,
+      // required: true
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
