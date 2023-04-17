@@ -44,7 +44,7 @@ router.get("/pets", isAuthenticated, (req, res) => {
 })
 
 // view pet profile details
-// GET /api/pets(:petId)
+// GET /api/pets/:petId
 router.get("/pets/:petId", (req, res) => {
     const { petId } = req.params;
   
