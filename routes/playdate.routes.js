@@ -16,7 +16,21 @@ router.get("/", (req, res) =>
 );
 
 // view your own playdates
-// GET /api/playdates/userId
+// GET /api/playdates/my-playdates
+router.get("my-playdates", isAuthenticated, (req, res) => {
+
+  const userId = req.payload._id;
+
+  Playdate.find({ createdBy: userId })
+    .then(myPlaydates => res.json(myPlaydates))
+    .catch(err => {
+      console.log("error getting list of playdates", err);
+      res.status(500).json({
+          message: "error getting list of playdates",
+          error: err
+      })
+  })
+})
 
 // GET - view playdate
 router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
