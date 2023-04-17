@@ -15,23 +15,6 @@ router.get("/", (req, res) =>
     })
 );
 
-// view your own playdates
-// GET /api/playdates/my-playdates
-router.get("my-playdates", isAuthenticated, (req, res) => {
-
-  const userId = req.payload._id;
-
-  Playdate.find({ createdBy: userId })
-    .then(myPlaydates => res.json(myPlaydates))
-    .catch(err => {
-      console.log("error getting list of playdates", err);
-      res.status(500).json({
-          message: "error getting list of playdates",
-          error: err
-      })
-  })
-})
-
 // GET - view playdate
 router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
   const playdateId = req.params.playdateId;
@@ -64,7 +47,7 @@ router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
   // });
   
 // POST - create a playdate
-router.post("/create",  (req, res) => {
+router.post("/create", isAuthenticated, (req, res) => {
   const { imageUrl, title, location, date, time, pets, description } = req.body;
 
   const newPlaydate = new Playdate({
@@ -75,7 +58,7 @@ router.post("/create",  (req, res) => {
     time,
     pets,
     description,
-    // organizer: req.payload.sub, // set the organizer to the authenticated user's ID
+    createdBy: req.payload._id
   });
 
   newPlaydate
@@ -86,6 +69,25 @@ router.post("/create",  (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+
+// PUT /api/playdates/:playdateId/like - like a playdate
+router.put('/:playdateId/like', isAuthenticated, (req, res) => {
+  const { playdateId } = req.params;
+  const userId = req.payload._id;
+
+  Playdate.findByIdAndUpdate(playdateId, {
+    $inc: { likes: 1 },
+    $push: { likedBy: userId }
+  }, { new: true }) 
+    .then(likedPlaydate => {
+      likedPlaydate.save();
+      res.status(200).json(likedPlaydate);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'error liking playdate' });
+    })
+})
 
 // PUT - edit my playdate
 router.put("/:playdateId/edit",  (req, res) => {
