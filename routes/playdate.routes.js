@@ -4,6 +4,7 @@ const Playdate = require("../models/Playdate.model.js");
 const mongoose = require("mongoose");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const fileUploader = require("../config/cloudinary.config");
+const Pet = require("../models/Pet.model.js");
 
 //GET - list all playdates
 router.get("/", (req, res) =>
@@ -16,6 +17,7 @@ router.get("/", (req, res) =>
 );
 
 // GET - view playdate
+// /api/playdates/:playdateId
 router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
   const playdateId = req.params.playdateId;
 
@@ -90,21 +92,16 @@ router.put('/:playdateId/like', isAuthenticated, (req, res) => {
 })
 
 // PUT - edit my playdate
-router.put("/:playdateId/edit",  (req, res) => {
+// /playdates/:playdateId
+router.put("/:playdateId",  (req, res) => {
   const playdateId = req.params.playdateId;
-  const { title, location, date, time, pets, description } = req.body;
+  // const { title, location, date, time, pets, description } = req.body;
 
-  Playdate.findByIdAndUpdate(
-    playdateId,
-    { imageUrl, title, location, date, time, pets, description },
-    { new: true }
-  )
+  Playdate.findByIdAndUpdate( playdateId, req.body, { new: true })
     .then((playdate) => {
       if (!playdate) {
         return res.status(404).json({ message: "Playdate not found" });
       }
-      console.log({ playdate });
-
       res.json({ playdate });
     })
     .catch((err) => {
@@ -113,21 +110,23 @@ router.put("/:playdateId/edit",  (req, res) => {
     });
 });
 
-// DELETE - delete my playdate
-router.delete("/playdates/:playdateId", (req, res, next) => {
+// DELETE - /api/playdates/:playdateId
+router.delete("/:playdateId", isAuthenticated, (req, res) => {
   const playdateId = req.params.playdateId;
+  const userId = req.payload._id;
 
-  if (!mongoose.Types.ObjectId.isValid(playdateId)) {
-    res.status(400).json({ message: "Specified ID is not valid" });
-    return;
-  }
+  Playdate.findOne({ _id: playdateId, createdBy: userId })
+    .then((playdate) => {
+      if(!playdate) {
+        return res.status(404).json({ message: "playdate not found" });
+      }
 
-  Playdate.findByIdAndRemove(playdateId)
-    .then(() =>
-      res.json({
-        message: `Playdate with ${playdateId} is removed successfully.`,
-      })
-    )
+      Playdate.findByIdAndRemove(playdateId)
+        .then(() => {
+          res.json({ message: `playdate with ${playdateId} was removed successfully`})
+        })
+        .catch((error) => res.json(error));
+    })
     .catch((error) => res.json(error));
 });
 
