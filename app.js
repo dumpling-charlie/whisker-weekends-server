@@ -30,6 +30,9 @@ app.use("/api/playdates", playdateRoutes);
 const petRoutes = require("./routes/pet.routes");
 app.use("/api", petRoutes);
 
+const friendlyRoutes = require("./routes/friendly.routes");
+app.use("/api/friendly", friendlyRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 
