@@ -26,10 +26,10 @@ router.get("/pets", isAuthenticated, (req, res) => {
 // create pet profile
 // POST /api/pets/
   router.post("/pets", isAuthenticated, (req, res, next) => {
-    const { name, age, species, breed, personality } = req.body;
+    const { name, age, species, breed, personality, imageUrl } = req.body;
     const userId = req.payload._id;
 
-    Pet.create( {name, age, species, breed, personality, owner: userId} )
+    Pet.create( {name, age, species, breed, personality, owner: userId, imageUrl} )
         .then((result) => {
           console.log(userId)
             res.status(201).json(result)
@@ -64,11 +64,11 @@ router.get("/pets/:petId", (req, res) => {
 
   // create pet profile
   // POST /api/pets/
-  router.post("/", isAuthenticated, (req, res, next) => {
-      const { name, age, species, breed, personality } = req.body;
+  router.post("/pets", isAuthenticated, (req, res, next) => {
+      const { name, age, species, breed, personality, imageUrl } = req.body;
       const userId = req.payload._id;
   
-      Pet.create( {name, age, species, breed, personality, owner: userId} )
+      Pet.create( {name, age, species, breed, personality, imageUrl, owner: userId} )
           .then((result) => {
             console.log(userId)
               res.status(201).json(result)
