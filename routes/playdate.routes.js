@@ -63,18 +63,26 @@ router.put('/:playdateId/like', isAuthenticated, (req, res) => {
   const { playdateId } = req.params;
   const userId = req.payload._id;
 
-  Playdate.findByIdAndUpdate(playdateId, {
-    $inc: { likes: 1 },
-    $push: { likedBy: userId }
-  }, { new: true }) 
-    .then(likedPlaydate => {
-      likedPlaydate.save();
-      res.status(200).json(likedPlaydate);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: 'error liking playdate' });
-    })
+  Playdate.findByIdAndUpdate(playdateId)
+    .then(playdate => {
+      if(playdate.likedBy.includes(userId)) {
+        playdate.likes -= 1;
+        const index = playdate.likedBy.indexOf(userId);
+        playdate.likedBy.splice(index, 1);
+        console.log(playdate.likedBy);
+      } else {
+        playdate.likes += 1;
+        playdate.likedBy.push(userId);
+      }
+      return playdate.save();
+})
+  .then(updatedPlaydate => {
+    res.status(200).json(updatedPlaydate);
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({ error: 'error liking playdate' });
+  });
 })
 
 // PUT - edit my playdate
