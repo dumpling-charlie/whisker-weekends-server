@@ -18,7 +18,7 @@ router.get("/", (req, res) =>
 
 // GET - view playdate
 // /api/playdates/:playdateId
-router.get("/:playdateId", /*isAuthenticated,*/ (req, res) => {
+router.get("/:playdateId", isAuthenticated, (req, res) => {
   const playdateId = req.params.playdateId;
 
   if (!mongoose.Types.ObjectId.isValid(playdateId)) {
@@ -46,7 +46,8 @@ router.post("/create", isAuthenticated, (req, res) => {
     time,
     pets,
     description,
-    createdBy: req.payload._id
+    // createdBy: req.payload._id
+    createdBy: { _id: req.payload._id, name: req.payload.name }
   });
 
   newPlaydate
@@ -109,8 +110,9 @@ router.delete("/:playdateId", isAuthenticated, (req, res) => {
   const playdateId = req.params.playdateId;
   const userId = req.payload._id;
 
-  Playdate.findOne({ _id: playdateId, createdBy: userId })
+  Playdate.findOne({ _id: playdateId, 'createdBy._id': userId })
     .then((playdate) => {
+      console.log(playdate);
       if(!playdate) {
         return res.status(404).json({ message: "playdate not found" });
       }

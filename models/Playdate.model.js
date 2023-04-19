@@ -36,9 +36,11 @@ const playdateSchema = new Schema(
         // required: true
       },
       createdBy: {
-        type: Schema.Types.ObjectId,
+        _id: {type: Schema.Types.ObjectId, ref: 'User'},
+        name: {type: String}
+        /*type: Schema.Types.ObjectId,
         // required: true,
-        ref: 'User'
+        ref: 'User' */
       },
       likedBy: [{
         type: Schema.Types.ObjectId,

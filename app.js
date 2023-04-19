@@ -22,7 +22,7 @@ const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
 const profileRoutes = require("./routes/profile.routes");
-app.use("/api/profile", profileRoutes);
+app.use("/api", profileRoutes);
 
 const playdateRoutes = require("./routes/playdate.routes");
 app.use("/api/playdates", playdateRoutes);
