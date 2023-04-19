@@ -22,7 +22,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "location is required."],
     },
-    image: {
+    imageUrl: {
       type: String,
       // required: true
     },
