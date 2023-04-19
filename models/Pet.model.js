@@ -21,7 +21,7 @@ const petSchema = new Schema(
     },
     personality: {
       type: String,
-      enum: ['introvert', 'outgoing', 'playful'],
+      enum: ['Introvert', 'Outgoing', 'Playful', 'Protective', 'Independant', 'Affectionate'],
       // required: true
     },
     owner: {
