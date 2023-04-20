@@ -31,8 +31,7 @@ const petSchema = new Schema(
         ref: 'User'
     },
     imageUrl: {
-      type: String,
-      required: true
+      type: String
     }
   },
   {

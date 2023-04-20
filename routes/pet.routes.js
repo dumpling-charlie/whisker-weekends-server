@@ -89,11 +89,9 @@ router.post("/pets", isAuthenticated, (req, res, next) => {
     owner: userId,
   })
     .then((result) => {
-      console.log(userId);
       res.status(201).json(result);
     })
     .catch((err) => {
-      console.log("error creating a new pet", err);
       res.status(500).json({
         message: "error creating a new pet",
         error: err,
