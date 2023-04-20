@@ -6,9 +6,10 @@ const PORT = process.env.PORT || 5005;
 
 const cors = require('cors');
 const http = require('http').Server(app);
-const socketIO = require('socket.io')(http, {
+const socketIO = require("socket.io")(http, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: "*",
+    methods: ["GET", "POST"]
   },
 });
 
