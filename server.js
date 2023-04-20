@@ -6,9 +6,9 @@ const PORT = process.env.PORT || 5005;
 
 const cors = require('cors');
 const http = require('http').Server(app);
-const socketIO = require("socket.io")(http, {
+const socketIO = require('socket.io')(http, {
   cors: {
-    origin: "*:*",
+    origin: '8',
   },
 });
 
@@ -35,6 +35,16 @@ socketIO.on("connection", (socket) => {
     socket.disconnect();
   });
 });
+
+handlePreflightRequest: (req, res) => {
+  res.writeHead(200, {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST",
+    "Access-Control-Allow-Headers": "my-custom-header",
+    "Access-Control-Allow-Credentials": true
+  });
+  res.end();
+}
 
 http.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
