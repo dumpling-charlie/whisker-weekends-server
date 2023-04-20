@@ -16,7 +16,6 @@ router.get("/profile/:userId", isAuthenticated, (req, res) => {
   }
 
   User.findById(userId)
-    .populate("pets")
     .then((user) => res.status(200).json(user))
     .catch((err) => {
       console.log(err);
@@ -44,22 +43,5 @@ router.put("/profile/:userId", isAuthenticated, (req, res) => {
       res.status(500).json({message: "Internal server error"});
     });
 }); 
-
-// GET - view another user's profile
-router.get("/profile/:userId", (req, res) => {
-  const { userId } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    res.status(400).json({ message: "Specified id is not valid" });
-    return;
-  }
-
-  User.findById(userId)
-    .then((user) => res.status(200).json(user))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({message: "Cannot find user with userId"});
-    });
-});
 
 module.exports = router;
