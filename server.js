@@ -5,14 +5,14 @@ const app = require("./app");
 const PORT = process.env.PORT || 5005;
 
 const cors = require('cors');
-const http = require('http').Server(app);
-const socketIO = require("socket.io")(http, {
+
+const server = require('http').Server(app);
+const socketIO = require('socket.io')(server, {
   cors: {
-    origin: "*",
+    origin: 'http://localhost:3000',
   },
 });
 
-app.use(cors());
 let users = [];
 
 socketIO.on("connection", (socket) => {
@@ -21,7 +21,7 @@ socketIO.on("connection", (socket) => {
     socketIO.emit("messageResponse", data);
   });
 
-  socket.on("typing", (data) => socket.broadcast.emit("typingResponse", data));
+  // socket.on("typing", (data) => socket.broadcast.emit("typingResponse", data));
 
   socket.on("newUser", (data) => {
     users.push(data);
@@ -36,16 +36,6 @@ socketIO.on("connection", (socket) => {
   });
 });
 
-handlePreflightRequest: (req, res) => {
-  res.writeHead(200, {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": ["GET, POST"],
-    "Access-Control-Allow-Headers": "my-custom-header",
-    "Access-Control-Allow-Credentials": true,
+	server.listen(PORT, () => {
+    console.log(`Server listening on http://localhost:${PORT}`);
   });
-  res.end();
-}
-
-http.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-});
