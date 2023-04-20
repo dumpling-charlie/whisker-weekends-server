@@ -6,9 +6,9 @@ const PORT = process.env.PORT || 5005;
 
 const cors = require('cors');
 const http = require('http').Server(app);
-const socketIO = require('socket.io')(http, {
+const socketIO = require("socket.io")(http, {
   cors: {
-    origin: '*',
+    origin: "https://whisker-weekends.netlify.app",
   },
 });
 
