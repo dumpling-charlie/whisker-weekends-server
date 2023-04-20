@@ -90,7 +90,6 @@ router.get("/pets/:petId", (req, res) => {
   
         Pet.findByIdAndUpdate(petId, req.body, {new: true})
           .then((updatedPet) => {
-            console.log({updatedPet});
             res.json({pet: updatedPet});
           })
           .catch((err) => {
