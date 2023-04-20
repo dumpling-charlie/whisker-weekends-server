@@ -8,20 +8,20 @@ const playdateSchema = new Schema(
       },
       title: {
         type: String,
-        // required: true
+        required: true
       },
       location: {
         type: String,
-        // required: true
+        required: true
       },
       date: {
         type: Date,
-        // required: true,
+        required: true,
       },
       pets: [{
-        name: {type: String, /* required: true */ },
-        age: {type: Number, /* required: true */ }, 
-        species: { type: String, /* required: true */ },
+        name: {type: String, required: true },
+        age: {type: Number, min: 0, required: true }, 
+        species: { type: String, required: true },
         breed: {type: String},
         personality: {type: String},
         owner: {type: Schema.Types.ObjectId, ref: 'User'},
@@ -29,18 +29,15 @@ const playdateSchema = new Schema(
       }],
       time: {
         type: String,
-        // required: true,
+        required: true,
       },
       description: {
         type: String, 
-        // required: true
+        required: true
       },
       createdBy: {
         _id: {type: Schema.Types.ObjectId, ref: 'User'},
         name: {type: String}
-        /*type: Schema.Types.ObjectId,
-        // required: true,
-        ref: 'User' */
       },
       likedBy: [{
         type: Schema.Types.ObjectId,
@@ -48,7 +45,8 @@ const playdateSchema = new Schema(
       }],
       likes:{
         type: Number,
-        default: 0
+        default: 0,
+        min: 0
       }
     },
 )

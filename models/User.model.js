@@ -29,9 +29,12 @@ const userSchema = new Schema(
     imageUrl: {
       type: String,
     },
+    pets: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Pet'
+    }]
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

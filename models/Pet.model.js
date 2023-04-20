@@ -9,6 +9,7 @@ const petSchema = new Schema(
     },
     age: {
       type: Number,
+      min: 0,
       required: [true, "Age is required."],
     },
     species: {
@@ -22,20 +23,19 @@ const petSchema = new Schema(
     personality: {
       type: String,
       enum: ['Introvert', 'Outgoing', 'Playful', 'Protective', 'Independant', 'Affectionate'],
-      // required: true
+      required: true
     },
     owner: {
         type: Schema.Types.ObjectId,
-        // required: true,
+        required: true,
         ref: 'User'
     },
     imageUrl: {
       type: String,
-      // required: true
+      required: true
     }
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

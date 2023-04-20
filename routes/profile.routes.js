@@ -16,6 +16,7 @@ router.get("/profile/:userId", isAuthenticated, (req, res) => {
   }
 
   User.findById(userId)
+    .populate("pets")
     .then((user) => res.status(200).json(user))
     .catch((err) => {
       console.log(err);

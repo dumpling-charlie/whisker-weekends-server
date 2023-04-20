@@ -3,19 +3,19 @@ const { Schema, model } = require("mongoose");
 const petfriendlySchema = new Schema({
   name: {
     type: String,
-    // required: true
+    required: true
   },
   location: {
     type: String,
-    // required: true
+    required: true
   },
   details: {
     type: String,
-    // required: true
+    required: true
   },
   createdBy: {
     type: Schema.Types.ObjectId,
-    // required: true,
+    required: true,
     ref: "User",
   },
   likedBy: [
@@ -27,6 +27,7 @@ const petfriendlySchema = new Schema({
   likes: {
     type: Number,
     default: 0,
+    min: 0
   },
 });
 
