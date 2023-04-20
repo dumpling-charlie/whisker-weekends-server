@@ -22,9 +22,12 @@ const userSchema = new Schema(
       type: String,
       required: [true, "location is required."],
     },
+    bio:{
+      type: String,
+      maxLength: 100
+    },
     imageUrl: {
       type: String,
-      // required: true
     },
   },
   {

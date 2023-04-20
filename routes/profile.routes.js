@@ -26,7 +26,7 @@ router.get("/profile/:userId", isAuthenticated, (req, res) => {
 // PUT - edit my account
 router.put("/profile/:userId", isAuthenticated, (req, res) => {
   const {userId} = req.params;
-  const { name, location } = req.body;
+  const { name, location, imageUrl, bio } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     res.status(400).json({ message: "Specified id is not valid" });
