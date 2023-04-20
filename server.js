@@ -38,10 +38,10 @@ socketIO.on("connection", (socket) => {
 
 handlePreflightRequest: (req, res) => {
   res.writeHead(200, {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "https://whisker-weekends.netlify.app",
     "Access-Control-Allow-Methods": "GET, POST",
     "Access-Control-Allow-Headers": "my-custom-header",
-    "Access-Control-Allow-Credentials": true
+    "Access-Control-Allow-Credentials": true,
   });
   res.end();
 }
