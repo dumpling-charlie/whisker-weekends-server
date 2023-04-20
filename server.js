@@ -8,8 +8,7 @@ const cors = require('cors');
 const http = require('http').Server(app);
 const socketIO = require("socket.io")(http, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: "*:*",
   },
 });
 
