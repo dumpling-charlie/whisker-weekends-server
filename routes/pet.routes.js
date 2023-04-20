@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Pet = require("../models/Pet.model");
-const User = require("../models/User.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const fileUploader = require("../config/cloudinary.config");
 
@@ -17,38 +16,6 @@ router.get("/pets", isAuthenticated, (req, res) => {
       console.log("error getting list of pets", err);
       res.status(500).json({
         message: "error getting list of pets",
-        error: err,
-      });
-    });
-});
-
-// create pet profile
-// POST /api/pets/
-router.post("/pets", isAuthenticated, (req, res, next) => {
-  const { name, age, species, breed, personality, imageUrl } = req.body;
-  const userId = req.payload._id;
-  console.log(userId);
-
-  Pet.create({
-    name,
-    age,
-    species,
-    breed,
-    personality,
-    owner: userId,
-    imageUrl,
-  })
-    .then((newPet) => {
-      return User.findByIdAndUpdate({_id: userId}, {pets: newPet._id});
-    })
-    .then((user) => {
-      console.log(user);
-    })
-
-    .catch((err) => {
-      console.log("error creating a new pet", err);
-      res.status(500).json({
-        message: "error creating a new pet",
         error: err,
       });
     });
