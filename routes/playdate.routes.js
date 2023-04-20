@@ -4,7 +4,6 @@ const Playdate = require("../models/Playdate.model.js");
 const mongoose = require("mongoose");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const fileUploader = require("../config/cloudinary.config");
-const Pet = require("../models/Pet.model.js");
 
 //GET - list all playdates
 router.get("/", (req, res) =>
@@ -35,7 +34,7 @@ router.get("/:playdateId", isAuthenticated, (req, res) => {
 });
   
 // POST - create a playdate
-router.post("/create", isAuthenticated, (req, res) => {
+router.post("/", isAuthenticated, (req, res) => {
   const { imageUrl, title, location, date, time, pets, description } = req.body;
 
   const newPlaydate = new Playdate({
