@@ -37,7 +37,7 @@ router.get("/:playdateId", isAuthenticated, (req, res) => {
 router.post("/", isAuthenticated, (req, res) => {
   const { imageUrl, title, location, date, time, pets, description } = req.body;
 
-  const newPlaydate = new Playdate({
+  Playdate.create({
     imageUrl,
     title,
     location,
@@ -45,12 +45,9 @@ router.post("/", isAuthenticated, (req, res) => {
     time,
     pets,
     description,
-    // createdBy: req.payload._id
     createdBy: { _id: req.payload._id, name: req.payload.name }
-  });
+  })
 
-  newPlaydate
-    .save()
     .then((playdate) => res.status(201).json(playdate))
     .catch((err) => {
       console.log(err);
