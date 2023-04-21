@@ -33,7 +33,7 @@ router.get("/:playdateId", isAuthenticated, (req, res) => {
     });
 });
   
-// POST - create a playdate
+// POST - /api/playdates/
 router.post("/", isAuthenticated, (req, res) => {
   const { imageUrl, title, location, date, time, pets, description } = req.body;
 
@@ -86,7 +86,7 @@ router.put('/:playdateId/like', isAuthenticated, (req, res) => {
 // /playdates/:playdateId
 router.put("/:playdateId",  (req, res) => {
   const playdateId = req.params.playdateId;
-  // const { title, location, date, time, pets, description } = req.body;
+  const { title, location, date, time, pets, description } = req.body;
 
   Playdate.findByIdAndUpdate( playdateId, req.body, { new: true })
     .then((playdate) => {
